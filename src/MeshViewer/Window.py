@@ -42,7 +42,7 @@ class Window:
         glViewport(0, 0, self.width, self.height)
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(0, self.width, 0, self.width, 1.0, 0.0)
+        glOrtho(-10, 10, -10, 10, -5.0, 5.0)
         glMatrixMode (GL_MODELVIEW)
         glLoadIdentity()
     
