@@ -8,14 +8,16 @@
 # --- IMPORTS ---
 
 from src.Core.Core import Core
+import sys
 
 # ---------------
 
 
 def main() -> int:
-    
-    core: Core = Core()
-
+    if (len(sys.argv) > 1):
+        core: Core = Core(sys.argv[1])
+    else:
+        core: Core = Core();
     core.run()
 
     return 0

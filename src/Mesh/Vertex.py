@@ -12,7 +12,7 @@ Z = 2
 
 class Vertex:
 
-    vertex : tuple[float]
+    vertex : 'tuple[float]'
     x: float
     y: float
     z: float
@@ -23,7 +23,7 @@ class Vertex:
         self.y = y
         self.z = z
     
-    def set_coordinates(self, coords: tuple[float]) -> None:
+    def set_coordinates(self, coords: 'tuple[float]') -> None:
         self.vertex = (coords[X], coords[Y], coords[Z])
         self.x = coords[X]
         self.y = coords[Y]

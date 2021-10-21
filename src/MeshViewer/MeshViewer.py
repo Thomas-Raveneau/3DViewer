@@ -21,7 +21,7 @@ class MeshViewer:
     def __init__(self) -> None:
         pass
 
-    def draw_quad(self, quad_vertices: list[Vertex]) -> None:
+    def draw_quad(self, quad_vertices: 'list[Vertex]') -> None:
         glColor3d(0, 1, 0);
         glBegin(GL_POLYGON);
 
@@ -30,7 +30,7 @@ class MeshViewer:
 
         glEnd();
     
-    def draw_triangle(self, triangle_vertices: list[Vertex]) -> None:
+    def draw_triangle(self, triangle_vertices: 'list[Vertex]') -> None:
         glColor3d(0, 1, 0);
         glBegin(GL_TRIANGLES);
 

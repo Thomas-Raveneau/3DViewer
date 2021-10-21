@@ -22,15 +22,17 @@ class Core:
     viewer: MeshViewer
     stl_reader: StlReader
     current_mesh: Mesh
+    file: str
 
-    def __init__(self) -> None:
+    def __init__(self, file = 'C:/Users/thoma/Desktop/dev_software/3DViewer/Objects/Cube.stl') -> None:
         self.stl_reader = StlReader()
         self.window = Window('3D Viewer', 600, 600)
         self.viewer = MeshViewer()
+        self.file = file
 
     def run(self) -> None:
         
-        self.current_mesh = self.stl_reader.get_mesh_from_file('C:/Users/thoma/Desktop/dev_software/3DViewer/Objects/Cube.stl')
+        self.current_mesh = self.stl_reader.get_mesh_from_file(self.file)
 
         self.window.set_display_function(self.__loop)
         self.window.set_idle_function(self.__loop)
