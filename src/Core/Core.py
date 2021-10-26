@@ -10,6 +10,7 @@ from src.StlReader.StlReader import StlReader
 
 from src.MeshViewer.Window import Window
 from src.MeshViewer.MeshViewer import MeshViewer
+from src.MeshOperator.MeshOperator import MeshOperator
 
 from src.Mesh.Mesh import Mesh
 from src.Mesh.Vertex import Vertex
@@ -20,6 +21,7 @@ class Core:
 
     window: Window
     viewer: MeshViewer
+    operator: MeshOperator
     stl_reader: StlReader
     current_mesh: Mesh
     file: str
@@ -28,6 +30,7 @@ class Core:
         self.stl_reader = StlReader()
         self.window = Window('3D Viewer', 600, 600)
         self.viewer = MeshViewer()
+        self.operator = MeshOperator()
         self.file = file
 
     def run(self) -> None:
@@ -36,6 +39,9 @@ class Core:
 
         self.window.set_display_function(self.__loop)
         self.window.set_idle_function(self.__loop)
+        vertex = Vertex(2, 0, 0)
+        self.operator.translate_mesh(self.current_mesh, vertex)
+        self.operator.rotate_mesh_x(self.current_mesh, 45)
         self.window.run_main_loop()
 
     def __loop(self) -> None:
