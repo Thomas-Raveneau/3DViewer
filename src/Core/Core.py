@@ -14,6 +14,8 @@ from src.MeshOperator.MeshOperator import MeshOperator
 
 from src.Mesh.Mesh import Mesh
 from src.Mesh.Vertex import Vertex
+from src.Mesh.Coordinate import Coordinates as coords
+
 
 # ---------------
 
@@ -39,9 +41,12 @@ class Core:
 
         self.window.set_display_function(self.__loop)
         self.window.set_idle_function(self.__loop)
-        vertex = Vertex(2, 0, 0)
-        self.operator.translate_mesh(self.current_mesh, vertex)
-        self.operator.rotate_mesh_x(self.current_mesh, 45)
+        translatingVertex = Vertex(2, 0, 0)
+        self.operator.translate_mesh(self.current_mesh, translatingVertex)
+        self.operator.rotate_mesh_z(self.current_mesh, 30)
+        scalingVertex = Vertex(1.5, 2, 1.5)
+        self.operator.scale_mesh(self.current_mesh, scalingVertex)
+        self.operator.reflect_mesh(self.current_mesh, coords.X)
         self.window.run_main_loop()
 
     def __loop(self) -> None:

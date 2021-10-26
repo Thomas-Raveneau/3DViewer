@@ -6,9 +6,7 @@
 ##
 
 # TUPLE UTILS
-X = 0
-Y = 1
-Z = 2
+from src.Mesh.Coordinate import Coordinates as cords
 
 class Vertex:
 
@@ -24,10 +22,10 @@ class Vertex:
         self.z = z
     
     def set_coordinates(self, coords: 'tuple[float]') -> None:
-        self.vertex = (coords[X], coords[Y], coords[Z])
-        self.x = coords[X]
-        self.y = coords[Y]
-        self.z = coords[Z]
+        self.vertex = (coords[cords.X], coords[cords.Y], coords[cords.Z])
+        self.x = coords[cords.X]
+        self.y = coords[cords.Y]
+        self.z = coords[cords.Z]
 
     def set_coordinates(self, x: float, y: float, z: float) -> None:
         self.vertex = (x, y, z)
