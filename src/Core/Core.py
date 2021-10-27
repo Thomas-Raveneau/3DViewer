@@ -41,12 +41,16 @@ class Core:
 
         self.window.set_display_function(self.__loop)
         self.window.set_idle_function(self.__loop)
-        translatingVertex = Vertex(2, 0, 0)
-        self.operator.translate_mesh(self.current_mesh, translatingVertex)
-        self.operator.rotate_mesh_z(self.current_mesh, 30)
-        scalingVertex = Vertex(1.5, 2, 1.5)
-        self.operator.scale_mesh(self.current_mesh, scalingVertex)
-        self.operator.reflect_mesh(self.current_mesh, coords.X)
+        #translatingVertex = Vertex(-60, -50, 0)
+        #self.operator.rotate_mesh_x(self.current_mesh, -90)
+        #self.operator.rotate_mesh_y(self.current_mesh, 90)
+        #scalingVertex = Vertex(2, 2, 2)
+        #self.operator.scale_mesh(self.current_mesh, scalingVertex)
+        #self.operator.reflect_mesh(self.current_mesh, coords.X)
+        #shearTransform = (1, 0)
+        #self.operator.shear_mesh(self.current_mesh, shearTransform, coords.X)
+        #self.operator.translate_mesh(self.current_mesh, translatingVertex)
+        print("all operations ended")
         self.window.run_main_loop()
 
     def __loop(self) -> None:

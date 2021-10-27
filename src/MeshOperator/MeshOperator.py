@@ -5,7 +5,6 @@
 ## Vertex
 ##
 
-from ctypes import Array
 from typing import Any
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -29,8 +28,10 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
-            l = np.dot(t, l)
-            vertex.set_coordinates(l[0], l[1], l[2])
+            #print("l before =", l)
+            ret = np.dot(t, l)
+            #print("l then =", ret)
+            vertex.set_coordinates(ret[0], ret[1], ret[2])
     
     def translate_mesh(self, mesh: Mesh, translatingVertex: Vertex) -> None:
         faces: list[list[Vertex]] = mesh.get_faces()
@@ -109,7 +110,7 @@ class MeshOperator:
         for face in faces:
             self.scale_face(face, scalingVertex)
 
-    def reflect_face(self, vertices: 'list[Vertex]', reflectMatrix: Any) -> None:
+    def transform_face(self, vertices: 'list[Vertex]', reflectMatrix: Any) -> None:
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
             l = np.dot(reflectMatrix, l)
@@ -122,4 +123,14 @@ class MeshOperator:
         [0, 0, 1 + (-2 * (coordReflect == coords.Z)), 0],
         [0, 0, 0, 1]])
         for face in faces:
-            self.reflect_face(face, t)
+            self.transform_face(face, t)
+    
+    def shear_mesh(self, mesh: Mesh, shearTransform: 'tuple[float, float]', coordShear: coords) -> None:
+        faces: list[list[Vertex]] = mesh.get_faces()
+        t = np.array([[1, (coordShear == coords.Y) * shearTransform[0], (coordShear == coords.Z) * shearTransform[0], 0],
+        [(coordShear == coords.X) * shearTransform[0], 1, (coordShear == coords.Z) * shearTransform[1], 0],
+        [(coordShear == coords.X) * shearTransform[1], (coordShear == coords.Y) * shearTransform[1], 1, 0],
+        [0, 0, 0, 1]])
+        for face in faces:
+            self.transform_face(face, t)
+
