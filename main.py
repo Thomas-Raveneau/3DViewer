@@ -7,21 +7,37 @@
 
 # --- IMPORTS ---
 
-from src.Core.Core import Core
 import sys
-
-# ---------------
-
-
-def main() -> int:
-    if (len(sys.argv) > 1):
-        core: Core = Core(sys.argv[1])
-    else:
-        core: Core = Core();
-    core.run()
-
-    return 0
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication
+from src.Ui.Ui import Ui
 
 
-if __name__ == '__main__':
-    main()
+
+        
+class MainWindow(QMainWindow):
+
+    def __init__(self, parent=None):
+        QMainWindow.__init__(self, parent)
+        self.ui = Ui(self)
+        self.mainWidget = QWidget()
+        self.mainWidget.setLayout(self.ui.BoxFilled())
+        self.setCentralWidget(self.mainWidget)
+        self.setWindowTitle("BWC Project")
+        self.setGeometry(0, 0, 1500, 1000)
+
+
+        
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape:
+            self.close()
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setStyle("fusion")
+
+    w = MainWindow()
+    w.show()
+    sys.exit(app.exec_())

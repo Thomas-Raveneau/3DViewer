@@ -11,6 +11,8 @@ from types import MethodType
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from PyQt5.QtWidgets import QOpenGLWidget
+
 
 # ---------------
 
@@ -19,15 +21,14 @@ class Window:
     width: int
     height: int
     
-    def __init__(self, title: str, width: int, height: int) -> None:
+    def __init__(self, mainWindow: QOpenGLWidget, width: int, height: int) -> None:
         self.width = width
         self.height = height
         
         glutInit()
         glutInitDisplayMode(GLUT_RGBA)
-        glutInitWindowSize(self.width, self.height)
         glutInitWindowPosition(0, 0)
-        glutCreateWindow(title)
+        glutCreateWindow(mainWindow)
     
     def set_display_function(self, display_function: MethodType) -> None:
         glutDisplayFunc(display_function)

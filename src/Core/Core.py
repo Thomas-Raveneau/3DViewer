@@ -6,6 +6,11 @@
 ##
 
 # --- IMPORTS ---
+from OpenGL.raw.GL.VERSION.GL_1_0 import *
+from OpenGL.raw.GLUT import *
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QOpenGLWidget
+from PyQt5.sip import delete
 from src.StlReader.StlReader import StlReader
 
 from src.MeshViewer.Window import Window
@@ -19,44 +24,63 @@ from src.Mesh.Coordinate import Coordinates as coords
 
 # ---------------
 
-class Core:
-
-    window: Window
+class Core(QOpenGLWidget):
     viewer: MeshViewer
     operator: MeshOperator
     stl_reader: StlReader
     current_mesh: Mesh
     file: str
 
-    def __init__(self, file = 'C:/Users/thoma/Desktop/dev_software/3DViewer/Objects/Cube.stl') -> None:
-        self.stl_reader = StlReader()
-        self.window = Window('3D Viewer', 600, 600)
-        self.viewer = MeshViewer()
-        self.operator = MeshOperator()
+    def __init__(self, parent=None, file = '/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Stanford_Bunny_sample.stl') -> None:
+        QOpenGLWidget.__init__(self, parent)
         self.file = file
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.__loop)
+        self.timer.start(0)
 
-    def run(self) -> None:
-        
+    def initializeGL(self):
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_LIGHT0)
+        glEnable(GL_LIGHTING)
+        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE)
+        glEnable(GL_COLOR_MATERIAL)
+        self.stl_reader = StlReader()
+        ##self.window = Window('3D Viewer', 600, 600)
+        self.viewer = MeshViewer()
+
+        self.operator = MeshOperator()
+
+
+    def paintGL(self) -> None:
         self.current_mesh = self.stl_reader.get_mesh_from_file(self.file)
-
-        self.window.set_display_function(self.__loop)
-        self.window.set_idle_function(self.__loop)
-        #translatingVertex = Vertex(-60, -50, 0)
-        #self.operator.rotate_mesh_x(self.current_mesh, -90)
-        #self.operator.rotate_mesh_y(self.current_mesh, 90)
-        #scalingVertex = Vertex(2, 2, 2)
-        #self.operator.scale_mesh(self.current_mesh, scalingVertex)
-        #self.operator.reflect_mesh(self.current_mesh, coords.X)
-        #shearTransform = (1, 0)
-        #self.operator.shear_mesh(self.current_mesh, shearTransform, coords.X)
-        #self.operator.translate_mesh(self.current_mesh, translatingVertex)
+        self.__loop()
         print("all operations ended")
-        self.window.run_main_loop()
+
+    def resizeGL(self, w: int, h: int):
+        glViewport(0, 0, 600, 600)
+
+
+    def onChangeTranslate(self, vertex: Vertex)-> None:
+        self.operator.translate_mesh(self.current_mesh, vertex)
+    
+    def onChangeRotateX(self, rotation: float)-> None:
+        self.operator.rotate_mesh_x(self.current_mesh, rotation)
+    
+    def onChangeScale(self, vertex: Vertex)-> None:
+        self.operator.scale_mesh(self.current_mesh, vertex)
 
     def __loop(self) -> None:
-        self.window.clear()
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
 
         self.viewer.draw_mesh(self.current_mesh)
 
-        self.window.coordinates_system_handler()
-        self.window.swap_buffers()
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(-10, 10, -10, 10, -5.0, 5.0)
+
+        glMatrixMode (GL_MODELVIEW)
+        glLoadIdentity()
+        glFlush()
+
+   
