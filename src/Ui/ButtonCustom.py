@@ -7,6 +7,12 @@ class ButtonCustom(QPushButton):
         QPushButton.__init__(self, parent)
         self.setText(_name)
         self.move(0,0)
+        self.setStyleSheet(
+            "QPushButton {" + 
+                "border: 1px solid red;" +
+                "width: 100px;" +
+                "}"
+            )
 
     def paint(self):
         self.show()
