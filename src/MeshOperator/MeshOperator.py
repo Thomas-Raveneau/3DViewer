@@ -28,9 +28,7 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
-            #print("l before =", l)
             ret = np.dot(t, l)
-            #print("l then =", ret)
             vertex.set_coordinates(ret[0], ret[1], ret[2])
     
     def translate_mesh(self, mesh: Mesh, translatingVertex: Vertex) -> None:
@@ -46,9 +44,7 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
-            #print("l before =", l)
             ret = np.dot(t, l)
-            #print("l then =", ret)
             vertex.set_coordinates(ret[0], ret[1], ret[2])
 
     def rotate_mesh_x(self, mesh: Mesh, theta: float) -> None:
@@ -65,9 +61,7 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
-            #print("l before =", l)
             ret = np.dot(t, l)
-            #print("l then =", ret)
             vertex.set_coordinates(ret[0], ret[1], ret[2])
 
     def rotate_mesh_y(self, mesh: Mesh, theta: float) -> None:
@@ -83,9 +77,7 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for vertex in vertices:
             l = np.array([vertex.x, vertex.y, vertex.z, 1])
-            #print("l before =", l)
             ret = np.dot(t, l)
-            #print("l then =", ret)
             vertex.set_coordinates(ret[0], ret[1], ret[2])
 
     def rotate_mesh_z(self, mesh: Mesh, theta: float) -> None:
@@ -133,4 +125,5 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for face in faces:
             self.transform_face(face, t)
+        mesh.update()
 

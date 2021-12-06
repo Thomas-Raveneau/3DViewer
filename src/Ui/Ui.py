@@ -1,4 +1,5 @@
 
+from PyQt5.QtGui import QOpenGLContext
 from PyQt5.QtWidgets import *
 from src.Ui.ButtonCustom import ButtonCustom
 from src.Mesh.Vertex import Vertex
@@ -6,7 +7,7 @@ from src.Core.Core import Core
 
 
 class Ui(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, file="/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl", parent=None):
         QWidget.__init__(self, parent)
         self.layoutBox =  QVBoxLayout()
         self.layoutMenu =  QHBoxLayout()
@@ -32,7 +33,8 @@ class Ui(QWidget):
         self.layoutMenu.addWidget(self.Button1)
 
 
-        self.openglWidget1 = Core(self, "/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl")
+        self.openglWidget1 = Core(self, file)
+        print("Ui initialized")
     
     def BoxFilled(self) -> QVBoxLayout:
         self.layoutBox.addLayout(self.layoutMenu)
