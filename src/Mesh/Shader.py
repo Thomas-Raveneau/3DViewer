@@ -9,7 +9,6 @@ from typing import List
 from OpenGL.GL import *
 from OpenGL.arrays import vbo
 from OpenGL.raw.GL.VERSION.GL_2_0 import glAttachShader
-from OpenGLContext.arrays import *
 from OpenGL.GL import shaders
 from PyQt5.QtGui import (QOpenGLBuffer, QOpenGLShaderProgram, QOpenGLShader, QOpenGLVersionProfile)
 from PyQt5.QtWidgets import QOpenGLWidget
