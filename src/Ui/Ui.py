@@ -27,12 +27,13 @@ class Dial(QDial):
         # self.style().subControlRect(QStyle.CC_Dial, opt,
         #                                QStyle.SC_DialHandle)
         self.setMinimum(0)
-        self.setMaximum(360)
+        self.setMaximum(30)
         self.setValue(0)
         self.move(30, 50)
     
 
 class Ui(QWidget):
+    fontSize = 20
     def __init__(self, file="/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl", parent=None):
         QWidget.__init__(self, parent)
         self.menu = QWidget()
@@ -55,12 +56,6 @@ class Ui(QWidget):
         self.Rotate()
         ## Translate ##
         self.Translate()
-
-        ## Rotate ##
-        self.translateButton = ButtonCustom(self, "Rotate")
-        self.translateButton.clicked.connect(self.buttonRotate)
-        self.layoutMenu.addWidget(self.translateButton)
-
         ## Scale ##
         self.Scale()
 
@@ -69,22 +64,111 @@ class Ui(QWidget):
         self.layoutMenu.addStretch(1)
 
         self.menu.setLayout(self.layoutMenu)
-        self.menu.setMaximumWidth(200)
+        self.menu.setMaximumWidth(300)
 
-        self.openglWidget1 = Core(self, "/home/yann/2020_repositories/KMU/Graphics/tests/3DViewer/Objects/Cube.stl")
+        self.openglWidget1 = Core(self)
 
-###########Translate Function#####################
+    ###########ROTATION FUNCTION#################################
+    def Rotate(self):
+        self.rotateBlock = QWidget()
+        self.layoutRotateBlock = QVBoxLayout()
+        self.titleRotate = QLabel("Rotate")
+        self.titleRotate.setFont(QFont('Arial', self.fontSize))
+
+        self.layoutRotateBlock.addWidget(self.titleRotate)
+
+        self.layoutDialRotationX = QHBoxLayout()
+        self.dialx = Dial(self, Color.MAIN_COLOR)
+        self.dialx.valueChanged.connect(self.dialRotateX)
+        self.RotateTextX = QLabel("X")
+        self.layoutDialRotationX.addWidget(self.RotateTextX)
+        self.layoutDialRotationX.addWidget(self.dialx)
+
+        self.layoutRotateBlock.addLayout(self.layoutDialRotationX)
+
+        self.layoutDialRotationY = QHBoxLayout()
+        self.dialy = Dial(self, Color.SECOND_COLOR)
+        self.dialy.valueChanged.connect(self.dialRotateY)
+        self.RotateTextY = QLabel("Y")
+        self.layoutDialRotationY.addWidget(self.RotateTextY)
+        self.layoutDialRotationY.addWidget(self.dialy)
+        self.layoutRotateBlock.addLayout(self.layoutDialRotationY)
+
+        self.layoutDialRotationZ = QHBoxLayout()
+        self.dialz = Dial(self, Color.THIRTH_COLOR)
+        self.dialz.valueChanged.connect(self.dialRotateZ)
+        self.RotateTextZ = QLabel("Z")
+        self.layoutDialRotationZ.addWidget(self.RotateTextZ)
+        self.layoutDialRotationZ.addWidget(self.dialz)
+        self.layoutRotateBlock.addLayout(self.layoutDialRotationZ)
+
+        ##self.layoutDialRotation.addStretch(1)
+        # self.layoutRotateBlock.addLayout(self.layoutDialRotation)
+
+        self.rotateBlock.setStyleSheet("background-color: #EAA3FB")
+        self.rotateBlock.setLayout(self.layoutRotateBlock)
+
+        self.layoutMenu.addWidget(self.rotateBlock)
+
+    def dialRotateX(self):
+        print("Dial value = %i" % (self.dialx.value()))
+        self.openglWidget1.onChangeRotateX(self.dialx.value())
+        self.openglWidget1.update()
+
+    def dialRotateY(self):
+        print("Dial value = %i" % (self.dialy.value()))
+        self.openglWidget1.onChangeRotateY(self.dialy.value())
+        self.openglWidget1.update()
+
+    def dialRotateZ(self):
+        print("Dial value = %i" % (self.dialz.value()))
+        self.openglWidget1.onChangeRotateZ(self.dialz.value())
+        self.openglWidget1.update()
+
+#########################################################
+
+    ###########Translate Function#####################
     def Translate(self):
         ## Translate ##
         self.TranslateBlock = QWidget()
         self.layoutTranslateBlock = QVBoxLayout()
         self.titleTranslate = QLabel("Translate")
+        self.titleTranslate.setFont(QFont('Arial', self.fontSize))
+
         self.layoutTranslateBlock.addWidget(self.titleTranslate)
 
-        self.sliderTranslate = QSlider(Qt.Horizontal, self)
-        self.sliderTranslate.setGeometry(10, 40, 10, 10)
-        self.sliderTranslate.valueChanged[int].connect(self.buttonTranslate)
-        self.layoutTranslateBlock.addWidget(self.sliderTranslate)
+        self.layoutTranslateButton = QHBoxLayout()
+
+        ## UP ##
+        self.translateButtonUp = ButtonCustom(self, "↑")
+        self.translateButtonUp.clicked.connect(self.buttonTranslateUp)
+        self.translateButtonUp.setStyleSheet("color: #011FFF")
+
+        ## DOWN ##
+        self.translateButtonDown = ButtonCustom(self, "↓")
+        self.translateButtonDown.clicked.connect(self.buttonTranslateDown)
+        self.translateButtonDown.setStyleSheet("color: #011FFF")
+
+
+        ## Right ##
+        self.translateButtonRight = ButtonCustom(self, "←")
+        self.translateButtonRight.clicked.connect(self.buttonTranslateLeft)
+        self.translateButtonRight.setStyleSheet("color: #011FFF")
+
+        ## Left ##
+        self.translateButtonLeft = ButtonCustom(self, "→")
+        self.translateButtonLeft.clicked.connect(self.buttonTranslateRight)
+        self.translateButtonLeft.setStyleSheet("color: #011FFF")
+
+
+        self.layoutTranslateBlock.addWidget(self.translateButtonUp)
+        self.layoutTranslateButton.addWidget(self.translateButtonRight)
+        self.layoutTranslateButton.addWidget(self.translateButtonDown)
+        self.layoutTranslateButton.addWidget(self.translateButtonLeft)
+
+
+
+        self.layoutTranslateBlock.addLayout(self.layoutTranslateButton)
 
         self.layoutTranslateTexField = QHBoxLayout()
 
@@ -109,23 +193,44 @@ class Ui(QWidget):
 
         self.translateButton = ButtonCustom(self, "Translate")
         self.translateButton.clicked.connect(self.TranslateXYZ)
+        self.translateButton.setContentsMargins(-1, -1, -1, 0)
+
         self.layoutTranslateBlock.addWidget(self.translateButton)
+        self.layoutTranslateBlock.setSpacing(20)
 
         # self.rotateButton = ButtonCustom(self, "Translate")
         # self.rotateButton.clicked.connect(self.buttonTranslate)
-        self.TranslateBlock.setStyleSheet("background-color: #E6C96E")
+        self.TranslateBlock.setStyleSheet("background-color: #6EF9FF")
         self.TranslateBlock.setLayout(self.layoutTranslateBlock)
 
         self.layoutMenu.addWidget(self.TranslateBlock)
 
     def buttonTranslate(self, value):
         print("button Translate %d", value)
-        self.openglWidget1.onChangeTranslate(Vertex(value, value, value))
+        self.openglWidget1.onChangeTranslate(Vertex(0, 0, value))
+        self.openglWidget1.update()
+
+    def buttonTranslateDown(self):
+        print("button Translate down")
+        self.openglWidget1.onChangeTranslate(Vertex(0, 2, 0))
+        self.openglWidget1.update()
+    def buttonTranslateUp(self):
+        print("button Translate down")
+        self.openglWidget1.onChangeTranslate(Vertex(0, -2, 0))
+        self.openglWidget1.update()
+    def buttonTranslateRight(self):
+        print("button Translate down")
+        self.openglWidget1.onChangeTranslate(Vertex(2, 0, 0))
+        self.openglWidget1.update()
+
+    def buttonTranslateLeft(self):
+        print("button Translate down")
+        self.openglWidget1.onChangeTranslate(Vertex(-2, 0, 0))
         self.openglWidget1.update()
     def TranslateXYZ(self):
-        x = self.XInput.text()
-        y = self.YInput.text()
-        z = self.ZInput.text()
+        x = int(self.XInput.text())
+        y = int(self.YInput.text())
+        z = int(self.ZInput.text())
         self.openglWidget1.onChangeTranslate(Vertex(x, y, z))
         self.openglWidget1.update()
 #########################################################
@@ -134,12 +239,27 @@ class Ui(QWidget):
         self.ScaleBlock = QWidget()
         self.layoutScaleBlock = QVBoxLayout()
         self.titleScale = QLabel("Scale")
+        self.titleScale.setFont(QFont('Arial', self.fontSize))
         self.layoutScaleBlock.addWidget(self.titleScale)
 
-        self.sliderScale = QSlider(Qt.Horizontal, self)
-        self.sliderScale.setGeometry(10, 40, 10, 10)
-        self.sliderScale.valueChanged[int].connect(self.buttonScale)
-        self.layoutScaleBlock.addWidget(self.sliderScale)
+        self.layoutScaleButton = QHBoxLayout()
+        self.scaleButtonMignus = ButtonCustom(self, "-")
+        self.scaleButtonMignus.clicked.connect(self.ScaleMignus)
+        self.layoutScaleButton.addWidget(self.scaleButtonMignus)
+        self.scaleButtonMore = ButtonCustom(self, "+")
+        self.scaleButtonMore.clicked.connect(self.ScaleMore)
+        self.layoutScaleButton.addWidget(self.scaleButtonMore)
+
+        self.layoutScaleBlock.addLayout(self.layoutScaleButton)
+
+
+        # self.sliderScale = QSlider(Qt.Horizontal, self)
+        # self.sliderScale.setGeometry(10, 40, 10, 10)
+        # self.sliderScale.setSingleStep(50)
+        # self.sliderScale.setRange(0, 100)
+        #
+        # self.sliderScale.valueChanged[int].connect(self.buttonScale)
+        # self.layoutScaleBlock.addWidget(self.sliderScale)
 
         self.layoutScaleTexField = QHBoxLayout()
 
@@ -162,55 +282,36 @@ class Ui(QWidget):
         self.layoutScaleTexField.addWidget(self.ZInputS)
         self.layoutScaleBlock.addLayout(self.layoutScaleTexField)
 
-        # self.rotateButton = ButtonCustom(self, "Translate")
-        # self.rotateButton.clicked.connect(self.buttonTranslate)
-        self.ScaleBlock.setStyleSheet("background-color: #E6C96E")
+        self.scaleButton = ButtonCustom(self, "scale")
+        self.scaleButton.clicked.connect(self.ScaleXYZ)
+        self.layoutScaleBlock.addWidget(self.scaleButton)
+        self.layoutScaleBlock.setSpacing(20)
+
+        self.ScaleBlock.setStyleSheet("background-color: #A6E394")
         self.ScaleBlock.setLayout(self.layoutScaleBlock)
 
         self.layoutMenu.addWidget(self.ScaleBlock)
 
 
-###########ROTATION FUNCTION#################################
-    def Rotate(self):
-        self.rotateBlock = QWidget()
-        self.layoutRotateBlock = QVBoxLayout()
-        self.titleRotate = QLabel("Rotate")
-        self.layoutRotateBlock.addWidget(self.titleRotate)
-
-        self.layoutDialRotation = QHBoxLayout()
-        self.dialx = Dial(self, Color.MAIN_COLOR)
-        self.dialx.valueChanged.connect(self.dialRotateX)
-        self.dialy = Dial(self, Color.SECOND_COLOR)
-        self.dialy.valueChanged.connect(self.dialRotateY)
-        self.dialz = Dial(self, Color.THIRTH_COLOR)
-        self.dialz.valueChanged.connect(self.dialRotateZ)
-
-        self.layoutDialRotation.addWidget(self.dialx)
-        self.layoutDialRotation.addWidget(self.dialy)
-        self.layoutDialRotation.addWidget(self.dialz)
-        ##self.layoutDialRotation.addStretch(1)
-        self.layoutRotateBlock.addLayout(self.layoutDialRotation)
-
-        self.rotateBlock.setStyleSheet("background-color: #E6C96E")
-        self.rotateBlock.setLayout(self.layoutRotateBlock)
-
-        self.layoutMenu.addWidget(self.rotateBlock)
-
-    def dialRotateX(self):
-        print("Dial value = %i" % (self.dialx.value()))
-        self.openglWidget1.onChangeRotateX(self.dialx.value())
+    def buttonScale(self, value):
+        print("button Scale", value)
+        self.openglWidget1.onChangeScale(Vertex(value, value, value))
         self.openglWidget1.update()
 
-    def dialRotateY(self):
-        print("Dial value = %i" % (self.dialy.value()))
-        self.openglWidget1.onChangeRotateY(self.dialy.value())
+    def ScaleMignus(self):
+        self.openglWidget1.onChangeScale(Vertex(0.5, 0.5, 0.5))
         self.openglWidget1.update()
 
-    def dialRotateZ(self):
-        print("Dial value = %i" % (self.dialz.value()))
-        self.openglWidget1.onChangeRotateZ(self.dialz.value())
+    def ScaleMore(self):
+        self.openglWidget1.onChangeScale(Vertex(2, 2, 2))
         self.openglWidget1.update()
-#########################################################
+
+    def ScaleXYZ(self):
+        x = int(self.XInputS.text())
+        y = int(self.YInputS.text())
+        z = int(self.ZInputS.text())
+        self.openglWidget1.onChangeScale(Vertex(x, y, z))
+        self.openglWidget1.update()
 
     def getfile(self):
         self.layoutBox.removeWidget(self.openglWidget1)
@@ -226,11 +327,13 @@ class Ui(QWidget):
         self.layoutBox.removeWidget(self.openglWidget1)
         fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             '/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects',
-                                            "Image files (*.STL *.txt)")
-        self.openglWidget1.clear()
+                                            "Image files (*.vs *.fs *.jpg *.png)")
+        ##self.openglWidget1.clear()
         print(fname[0])
-        self.openglWidget1 = Core(self, fname[0])
-        self.layoutBox.addWidget(self.openglWidget1)
+        self.openglWidget1.onChangeFile(fname[0])
+        self.openglWidget1.update()
+
+        ##self.layoutBox.addWidget(self.openglWidget1)
         # self.openglWidget1.__loop()
 
     def BoxFilled(self) -> QVBoxLayout:
@@ -238,18 +341,7 @@ class Ui(QWidget):
         self.layoutBox.addWidget(self.openglWidget1)
         return self.layoutBox
 
-    def buttonTranslate(self, value):
-        print("button Translate %d", value)
-        self.openglWidget1.onChangeTranslate(Vertex(-60, 30, value))
-        self.openglWidget1.update()
-
     def buttonRotate(self):
         print("button Rotate")
         self.openglWidget1.onChangeRotateY(45)
         self.openglWidget1.update()
-
-    def buttonScale(self):
-        print("button Scale")
-        self.openglWidget1.onChangeScale(Vertex(2, 2, 2))
-        self.openglWidget1.__loop()
-
