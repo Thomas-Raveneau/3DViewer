@@ -19,6 +19,7 @@ from PyQt5.QtGui import QAbstractOpenGLFunctions, QImage, QOpenGLShaderProgram, 
 from PyQt5.QtCore import QFileInfo
 from .Vertex import Vertex
 
+
 import OpenGL.GL as GL
 
 import math as m
@@ -39,11 +40,8 @@ class Mesh:
     _vab: 'list[GLuint]' = []
     _program: QOpenGLShaderProgram
 
-    def __init__(self, vertices: 'list[list[float]]', program : QOpenGLShaderProgram, gl : QAbstractOpenGLFunctions) -> None:
+    def __init__(self, vertices: 'list[list[float]]', program : QOpenGLShaderProgram) -> None:
         print('Mesh created.')
-        self._program = program
-        self.gl = gl
-        
         self.draw_count = len(vertices)
 
         positions = []
@@ -52,7 +50,7 @@ class Mesh:
         for vertex in vertices:
             new_vertex = vertex * 0.2
             new_vertex = [new_vertex[0], new_vertex[1], new_vertex[2] + 1]
-            new_vertex = vertex
+            #new_vertex = vertex
             print("New Vertex = ", new_vertex)
 
             maxPoint = max(new_vertex[0], new_vertex[1], new_vertex[2])
@@ -73,24 +71,24 @@ class Mesh:
         
         self.texture = QOpenGLTexture(QImage('Shaders/bricks.jpg'))
 
-        self._program.bindAttributeLocation('vertex',
+        program.bindAttributeLocation('vertex',
                 self.PROGRAM_VERTEX_ATTRIBUTE)
-        self._program.bindAttributeLocation('texCoord',
+        program.bindAttributeLocation('texCoord',
                 self.PROGRAM_TEXCOORD_ATTRIBUTE)
         
-        self._program.link()
-        self._program.bind()
-        self._program.setUniformValue('texture', 0)
+        program.link()
+        program.bind()
+        program.setUniformValue('texture', 0)
         
-        self._program.enableAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE)
-        self._program.enableAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE)
+        program.enableAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE)
+        program.enableAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE)
         
-        self._program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE, self.positions)
-        self._program.setAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE, self.texCoords)
+        program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE, self.positions)
+        program.setAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE, self.texCoords)
     
-    def update(self) -> None:
-        self._program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE, self.positions)
-        self._program.setAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE, self.texCoords)
+    def update(self, program: QOpenGLShaderProgram) -> None:
+        program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE, self.positions)
+        program.setAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE, self.texCoords)
 
 
     def get_faces(self) -> 'list[list[Vertex]]':

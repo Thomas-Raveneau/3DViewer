@@ -25,9 +25,9 @@ class StlReader:
     def __del__(self) -> None:
         print('StlReader destroyed')
 
-    def get_mesh_from_file(self, file_fullpath: str, program : QOpenGLShaderProgram, gl : QAbstractOpenGLFunctions) -> Mesh:
+    def get_mesh_from_file(self, file_fullpath: str, program : QOpenGLShaderProgram) -> Mesh:
         stl_mesh = mesh.Mesh.from_file(file_fullpath)
 
         vertices = np.row_stack((stl_mesh.v0, stl_mesh.v1, stl_mesh.v2))
         
-        return Mesh(vertices, program, gl)
+        return Mesh(vertices, program)

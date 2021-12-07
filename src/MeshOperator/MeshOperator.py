@@ -36,6 +36,7 @@ class MeshOperator:
 
         for face in faces:
             self.translate_face(face, translatingVertex)
+        mesh.update()
 
     def rotate_face_x(self, vertices: 'list[Vertex]', theta: float) -> None:
         t = np.array([[1, 0, 0, 0],
@@ -52,6 +53,7 @@ class MeshOperator:
 
         for face in faces:
             self.rotate_face_x(face, math.radians(theta))
+        mesh.update()
 
 
     def rotate_face_y(self, vertices: 'list[Vertex]', theta: float) -> None:
@@ -69,6 +71,7 @@ class MeshOperator:
 
         for face in faces:
             self.rotate_face_y(face, math.radians(theta))
+        mesh.update()
 
     def rotate_face_z(self, vertices: 'list[Vertex]', theta: float) -> None:
         t = np.array([[math.cos(theta), -math.sin(theta), 0, 0],
@@ -85,6 +88,7 @@ class MeshOperator:
 
         for face in faces:
             self.rotate_face_z(face, math.radians(theta))
+        mesh.update()
     
     def scale_face(self, vertices: 'list[Vertex]', scaleVertex: Vertex) -> None:
         t = np.array([[scaleVertex.x, 0, 0, 0],
@@ -101,6 +105,7 @@ class MeshOperator:
 
         for face in faces:
             self.scale_face(face, scalingVertex)
+        mesh.update()
 
     def transform_face(self, vertices: 'list[Vertex]', reflectMatrix: Any) -> None:
         for vertex in vertices:
@@ -116,6 +121,7 @@ class MeshOperator:
         [0, 0, 0, 1]])
         for face in faces:
             self.transform_face(face, t)
+        mesh.update()
     
     def shear_mesh(self, mesh: Mesh, shearTransform: 'tuple[float, float]', coordShear: coords) -> None:
         faces: list[list[Vertex]] = mesh.get_faces()

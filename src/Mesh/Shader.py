@@ -15,16 +15,11 @@ from PyQt5.QtGui import (QOpenGLBuffer, QOpenGLShaderProgram, QOpenGLShader, QOp
 from PyQt5.QtWidgets import QOpenGLWidget
 
 class Shader():
-    _program : QOpenGLShaderProgram
     _shaders : 'list[GLuint]'
     _gl: QOpenGLVersionProfile
 
-    def __init__(self, filename : str, gl: QOpenGLVersionProfile, parent: QOpenGLWidget) -> None:
+    def __init__(self, filename : str, program: QOpenGLShaderProgram,) -> None:
         print("Initializing Shader")
         
-        self._program = QOpenGLShaderProgram()
-        
-        self._program.addShaderFromSourceFile(QOpenGLShader.Vertex, filename + '.vs')
-        self._program.addShaderFromSourceFile(QOpenGLShader.Fragment, filename + '.fs')
-
-        self._gl = gl
+        program.addShaderFromSourceFile(QOpenGLShader.Vertex, filename + '.vs')
+        program.addShaderFromSourceFile(QOpenGLShader.Fragment, filename + '.fs')

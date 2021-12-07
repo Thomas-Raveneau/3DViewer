@@ -28,6 +28,6 @@ class MeshViewer:
     def draw_mesh(self, mesh: Mesh, gl: QAbstractOpenGLFunctions) -> None:
         print("Drawing mesh")
         mesh.texture.bind()
-        gl.glDrawArrays(gl.GL_TRIANGLES, 0, mesh.draw_count)
+        gl.glDrawArrays(gl.GL_TRIANGLE_FAN, 0, mesh.draw_count)
         #gl.glBindVertexArray(0)
     
