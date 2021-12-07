@@ -1,25 +1,59 @@
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from src.Ui.ButtonCustom import ButtonCustom
 from src.Mesh.Vertex import Vertex
 from src.Core.Core import Core
+from enum import Enum
 
+class Color(Enum):
+    MAIN_COLOR = "#FC087A"
+    SECOND_COLOR = "#C812E6"
+    THIRTH_COLOR = "#F5E555"
+
+
+class Dial(QDial):
+    color: Color
+    def __init__(self, parent=None, color = Color.SECOND_COLOR):
+        QDial.__init__(self, parent)
+        print(color.value)
+        style = 'QDial { background-color: ' +  color.value  + '}'
+
+        print (style)
+        self.setStyleSheet(style)
+ 
+        # self.style().subControlRect(QStyle.CC_Dial, opt,
+        #                                QStyle.SC_DialHandle)
+        self.setMinimum(0)
+        self.setMaximum(360)
+        self.setValue(0)
+        self.move(30, 50)
+    
 
 class Ui(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-        self.layoutBox =  QVBoxLayout()
-        self.layoutMenu =  QHBoxLayout()
+        self.menu = QWidget()
+        self.layoutBox =  QHBoxLayout()
+        self.layoutMenu =  QVBoxLayout()
+        ##self.layoutMenu.setSizeConstraint(self, )
 
-        ## Dial ##
-        self.dial = QDial(self)
-        self.layoutMenu.addWidget(self.dial)
+        self.layoutDialGetObject =  QHBoxLayout()
+        self.btnGetFiles = QPushButton("Object")
+        self.btnGetFiles.clicked.connect(self.getfile)
+        self.btnGetTexture = QPushButton("Texture")
+        self.btnGetTexture.clicked.connect(self.loadTexture)
+        self.layoutDialGetObject.addWidget(self.btnGetFiles)
+        self.layoutDialGetObject.addWidget(self.btnGetTexture)
+        ##self.layoutDialGetObject.setFixedHeight(50)
+        self.layoutMenu.addLayout(self.layoutDialGetObject)
 
 
+        ## Rotate ##
+        self.Rotate()
         ## Translate ##
-        self.rotateButton = ButtonCustom(self, "Translate")
-        self.rotateButton.clicked.connect(self.buttonTranslate)
-        self.layoutMenu.addWidget(self.rotateButton)
+        self.Translate()
 
         ## Rotate ##
         self.translateButton = ButtonCustom(self, "Rotate")
@@ -27,21 +61,28 @@ class Ui(QWidget):
         self.layoutMenu.addWidget(self.translateButton)
 
         ## Scale ##
-        self.Button1 = ButtonCustom(self, "Scalling")
-        self.Button1.clicked.connect(self.buttonScale)
-        self.layoutMenu.addWidget(self.Button1)
+        self.Scale()
 
+
+        ##self.layoutMenu.addWidget(self.Button1)
+        self.layoutMenu.addStretch(1)
+
+        self.menu.setLayout(self.layoutMenu)
+        self.menu.setMaximumWidth(200)
 
         self.openglWidget1 = Core(self, "/home/yann/2020_repositories/KMU/Graphics/tests/3DViewer/Objects/Cube.stl")
     
     def BoxFilled(self) -> QVBoxLayout:
-        self.layoutBox.addLayout(self.layoutMenu)
+        self.layoutBox.addWidget(self.menu)
         self.layoutBox.addWidget(self.openglWidget1)
         return self.layoutBox
 
-    def buttonTranslate(self):
-        print("button Translate")
-        self.openglWidget1.onChangeTranslate(Vertex(-60, 30, 50))
+
+
+
+    def buttonTranslate(self, value):
+        print("button Translate %d", value)
+        self.openglWidget1.onChangeTranslate(Vertex(-60, 30, value))
         self.openglWidget1.update()
 
     def buttonRotate(self):
@@ -52,5 +93,5 @@ class Ui(QWidget):
     def buttonScale(self):
         print("button Scale")
         self.openglWidget1.onChangeScale(Vertex(2, 2, 2))
-        self.openglWidget1.update()
+        self.openglWidget1.__loop()
 
