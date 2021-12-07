@@ -1,6 +1,7 @@
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
+from PyQt5.QtGui import QOpenGLContext
 from PyQt5.QtWidgets import *
 from src.Ui.ButtonCustom import ButtonCustom
 from src.Mesh.Vertex import Vertex
@@ -32,7 +33,7 @@ class Dial(QDial):
     
 
 class Ui(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, file="/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl", parent=None):
         QWidget.__init__(self, parent)
         self.menu = QWidget()
         self.layoutBox =  QHBoxLayout()
@@ -237,9 +238,6 @@ class Ui(QWidget):
         self.layoutBox.addWidget(self.openglWidget1)
         return self.layoutBox
 
-
-
-
     def buttonTranslate(self, value):
         print("button Translate %d", value)
         self.openglWidget1.onChangeTranslate(Vertex(-60, 30, value))
@@ -247,7 +245,7 @@ class Ui(QWidget):
 
     def buttonRotate(self):
         print("button Rotate")
-        self.openglWidget1.onChangeRotateX(-90)
+        self.openglWidget1.onChangeRotateY(45)
         self.openglWidget1.update()
 
     def buttonScale(self):

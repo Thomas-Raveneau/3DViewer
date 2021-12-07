@@ -11,22 +11,29 @@ from types import MethodType
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-from PyQt5.QtWidgets import QOpenGLWidget
+from PyQt5.QtGui import QOpenGLContext
+from PyQt5.QtWidgets import QOpenGLWidget, QWidget
+
 
 
 # ---------------
 
-class Window: 
+class Window(QWidget): 
 
     width: int
     height: int
     
-    def __init__(self, mainWindow: QOpenGLWidget, width: int, height: int) -> None:
+    def __init__(self, mainWindow: QOpenGLWidget, width: int, height: int, parent: QWidget = None) -> None:
+        
         self.width = width
         self.height = height
+
         
         glutInit()
         glutInitDisplayMode(GLUT_RGBA)
+        
+        glutInitContextVersion(3, 3)
+        glutInitContextProfile(GLUT_CORE_PROFILE)
         glutInitWindowPosition(0, 0)
         glutCreateWindow(mainWindow)
     
@@ -37,6 +44,10 @@ class Window:
         glutIdleFunc(idle_function)
     
     def run_main_loop(self) -> None:
+        if (self._context == None):
+            self._context = QOpenGLContext(self)
+            self._context.create()
+        self._context.makeCurrent()
         glutMainLoop()
     
     def coordinates_system_handler(self) -> None:
