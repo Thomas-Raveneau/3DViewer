@@ -32,7 +32,6 @@ class Ui(QWidget):
         self.Button1.clicked.connect(self.buttonScale)
         self.layoutMenu.addWidget(self.Button1)
 
-
         self.openglWidget1 = Core(self, file)
         print("Ui initialized")
     
@@ -43,12 +42,12 @@ class Ui(QWidget):
 
     def buttonTranslate(self):
         print("button Translate")
-        self.openglWidget1.onChangeTranslate(Vertex(-60, 30, 50))
+        self.openglWidget1.onChangeTranslate(Vertex(0, 0, -10))
         self.openglWidget1.update()
 
     def buttonRotate(self):
         print("button Rotate")
-        self.openglWidget1.onChangeRotateX(-90)
+        self.openglWidget1.onChangeRotateY(45)
         self.openglWidget1.update()
 
     def buttonScale(self):

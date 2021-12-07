@@ -8,7 +8,7 @@
 # --- IMPORTS ---
 from OpenGL.raw.GL.VERSION.GL_1_0 import *
 from OpenGL.raw.GLUT import *
-from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtCore import QTimer, Qt, right
 from PyQt5.QtGui import QColor, QImage, QMatrix4x4, QOpenGLContext, QOpenGLShaderProgram, QOpenGLTexture, QOpenGLVersionProfile, QOpenGLShader
 from PyQt5.QtWidgets import QOpenGLWidget
 from PyQt5.sip import delete
@@ -35,83 +35,55 @@ class Core(QOpenGLWidget):
     file: str
     shader: Shader
     
-    vsrc = """
-attribute highp vec4 vertex;
-attribute mediump vec4 texCoord;
-varying mediump vec4 texc;
-uniform mediump mat4 matrix;
-void main(void)
-{
-    gl_Position = matrix * vertex;
-    texc = texCoord;
-}
-"""
-
-    fsrc = """
-uniform sampler2D texture;
-varying mediump vec4 texc;
-void main(void)
-{
-    gl_FragColor = texture2D(texture, texc.st);
-}
-"""
-    
-    coords = (
-        (( +1, -1, -1 ), ( -1, -1, -1 ), ( -1, +1, -1 ), ( +1, +1, -1 )),
-        (( +1, +1, -1 ), ( -1, +1, -1 ), ( -1, +1, +1 ), ( +1, +1, +1 )),
-        (( +1, -1, +1 ), ( +1, -1, -1 ), ( +1, +1, -1 ), ( +1, +1, +1 )),
-        (( -1, -1, -1 ), ( -1, -1, +1 ), ( -1, +1, +1 ), ( -1, +1, -1 )),
-        (( +1, -1, +1 ), ( -1, -1, +1 ), ( -1, -1, -1 ), ( +1, -1, -1 )),
-        (( -1, -1, +1 ), ( +1, -1, +1 ), ( +1, +1, +1 ), ( -1, +1, +1 ))
-    )
+    left = -20
+    right = 20
+    bottom = -15
+    top = 15
+    near = -20
+    far = 20
     
     PROGRAM_VERTEX_ATTRIBUTE, PROGRAM_TEXCOORD_ATTRIBUTE = range(2)
 
-    def __init__(self, parent=None, file = '/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Stanford_Bunny_sample.stl') -> None:
+    def __init__(self, parent=None, meshFile = '/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Stanford_Bunny_sample.stl', textureFile = 'Shaders/bricks.jpg') -> None:
         super(Core, self).__init__(parent)
         
-        self.file = file
+        self.meshFile = meshFile
+        self.textureFile = textureFile
         self.clearColor = QColor(Qt.white)
+        self.width = self.right - self.left
+        self.height = self.top - self.bottom
+        self.depth = self.far - self.near
         
-
     def initializeGL(self):
-        print("initializing GL")
         version_profile = QOpenGLVersionProfile()
         version_profile.setVersion(2, 0)
         self.gl = self.context().versionFunctions(version_profile)
         self.gl.initializeOpenGLFunctions()
         
-        self.createObject()
-        self.draw_count = len(self.vertices)
+        self.gl.glOrtho(self.left, self.right, self.bottom, self.top, self.near, self.far)
 
-#        self.stl_reader = StlReader()
+        self.stl_reader = StlReader()        
         
-        self.gl.glEnable(self.gl.GL_DEPTH_TEST)
-        
-        #self.shader = Shader("Shaders/FogShader", self.gl, self)
-
-        # self.shader = Shader("Shaders/basicShader", self.program)
-        filename = "Shaders/basicShader"
         filename = "Shaders/FogShader"        
-
-        vshader = QOpenGLShader(QOpenGLShader.Vertex, self)
-        vshader.compileSourceCode(self.vsrc)
-
-        fshader = QOpenGLShader(QOpenGLShader.Fragment, self)
-        fshader.compileSourceCode(self.fsrc)
 
         self.program = QOpenGLShaderProgram()
         
-        self.program.addShader(vshader)
-        self.program.addShader(fshader)
+        self.program.addShaderFromSourceFile(QOpenGLShader.Vertex, filename + '.vs')
+        self.program.addShaderFromSourceFile(QOpenGLShader.Fragment, filename + '.fs')
         
-        #self.program.addShaderFromSourceFile(QOpenGLShader.Vertex, filename + '.vs')
-        #self.program.addShaderFromSourceFile(QOpenGLShader.Fragment, filename + '.fs')
+        self.vertices, self.texCoords, self.draw_count = self.stl_reader.get_mesh_from_file(self.meshFile, self.width, self.height, self.depth)
         
-        # self.current_mesh = self.stl_reader.get_mesh_from_file(self.file, self.program)
-        
-        self.texture = QOpenGLTexture(QImage('Shaders/bricks.jpg'))
+        self.updateMesh()
 
+        self.texture = QOpenGLTexture(QImage(self.textureFile))
+
+        self.program.setUniformValue('texture', 0)
+
+        self.operator = MeshOperator()
+
+    def updateMesh(self)-> None:
+        self.draw_count = len(self.vertices)
+        
         self.program.bindAttributeLocation('vertex',
                 self.PROGRAM_VERTEX_ATTRIBUTE)
         self.program.bindAttributeLocation('texCoord',
@@ -119,73 +91,50 @@ void main(void)
         
         self.program.link()
         self.program.bind()
-        self.program.setUniformValue('texture', 0)
         
-        print(self.vertices)
         self.program.enableAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE)
         self.program.enableAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE)
         
         self.program.setAttributeArray(self.PROGRAM_VERTEX_ATTRIBUTE, self.vertices)
         self.program.setAttributeArray(self.PROGRAM_TEXCOORD_ATTRIBUTE, self.texCoords)
-        
-        # self.viewer = MeshViewer()
-        self.operator = MeshOperator()
 
-
-    def paintGL(self) -> None:
-        # if (self.current_mesh == None):
-        #     self.current_mesh = self.stl_reader.get_mesh_from_file(self.file, self.program)
+    def paintGL(self)-> None:
         self.__loop()
-        print("all operations ended")
 
     def resizeGL(self, w: int, h: int):
-        glViewport(0, 0, 600, 600)
-
-    def createObject(self):
-        self.texCoords = []
-        self.vertices = []
-
-        for i in range(6):
-
-            for j in range(4):
-                self.texCoords.append(((j == 0 or j == 3), (j == 0 or j == 1)))
-
-                x, y, z = self.coords[i][j]
-                self.vertices.append((0.2 * x, 0.2 * y, 0.2 * z))
+        glViewport(0, 0, w, h)
 
     def onChangeTranslate(self, vertex: Vertex)-> None:
-        self.operator.translate_mesh(self.current_mesh, vertex)
+        new_vertex = Vertex(vertex.x / self.width, vertex.y / self.height, vertex.z / self.depth)
+        self.operator.translate_mesh(new_vertex)
     
     def onChangeRotateX(self, rotation: float)-> None:
-        self.operator.rotate_mesh_x(self.current_mesh, rotation)
+        self.operator.rotate_mesh_x(rotation)
+        
+    def onChangeRotateY(self, rotation: float)-> None:
+        self.operator.rotate_mesh_y(rotation)
+    
+    def onChangeRotateZ(self, rotation: float)-> None:
+        self.operator.rotate_mesh_z(rotation)
     
     def onChangeScale(self, vertex: Vertex)-> None:
-        self.operator.scale_mesh(self.current_mesh, vertex)
+        self.operator.scale_mesh(vertex)
+    
+    def onChangeFile(self, textureFile: str)-> None:
+        self.textureFile = textureFile
+        self.texture = QOpenGLTexture(QImage(self.textureFile))
+    
+    def onChangeReflect(self, coordReflect: coords)-> None:
+        self.operator.reflect_mesh(coordReflect)
 
     def __loop(self) -> None:
-        print("looping")
+        self.gl.glEnable(self.gl.GL_DEPTH_TEST)
+
         self.gl.glClearColor(self.clearColor.redF(), self.clearColor.greenF(),
                 self.clearColor.blueF(), self.clearColor.alphaF())
         self.gl.glClear(self.gl.GL_COLOR_BUFFER_BIT | self.gl.GL_DEPTH_BUFFER_BIT)
-        # self.gl.glLoadIdentity()
-
-
-        m = QMatrix4x4()
-        m.ortho(-1.5, 1.5, 1.5, -1.5, 4.0, 15.0)
-        m.translate(0.0, 0.0, -10.0)
         
-        self.program.setUniformValue('matrix', m)
+        self.program.setUniformValue('matrix', self.operator.m)
         
         self.texture.bind()
         self.gl.glDrawArrays(self.gl.GL_TRIANGLE_FAN, 0, self.draw_count)
-        
-        #self.viewer.draw_mesh(self.current_mesh, self.gl)
-        # self.gl.glMatrixMode(self.gl.GL_PROJECTION)
-        # self.gl.glLoadIdentity()
-        # self.gl.glOrtho(-100, 100, -100, 100, -100.0, 100.0)
-
-        # self.gl.glMatrixMode(self.gl.GL_MODELVIEW)
-        # self.gl.glLoadIdentity()
-        #self.gl.glFlush()
-
-   
