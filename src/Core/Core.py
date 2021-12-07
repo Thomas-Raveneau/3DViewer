@@ -31,12 +31,13 @@ class Core(QOpenGLWidget):
     current_mesh: Mesh
     file: str
 
-    def __init__(self, parent=None, file = '/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Stanford_Bunny_sample.stl') -> None:
+    def __init__(self, parent=None, file = '/home/yann/2020_repositories/KMU/Graphics/tests/3DViewer/Objects/Cube.stl') -> None:
         QOpenGLWidget.__init__(self, parent)
         self.file = file
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.__loop)
         self.timer.start(0)
+        self.initializeGL()
 
     def initializeGL(self):
         glEnable(GL_DEPTH_TEST)
@@ -47,12 +48,14 @@ class Core(QOpenGLWidget):
         self.stl_reader = StlReader()
         ##self.window = Window('3D Viewer', 600, 600)
         self.viewer = MeshViewer()
+        self.current_mesh = self.stl_reader.get_mesh_from_file(self.file)
 
         self.operator = MeshOperator()
 
 
     def paintGL(self) -> None:
-        self.current_mesh = self.stl_reader.get_mesh_from_file(self.file)
+        if (self.current_mesh == None):
+            self.current_mesh = self.stl_reader.get_mesh_from_file(self.file)
         self.__loop()
         print("all operations ended")
 

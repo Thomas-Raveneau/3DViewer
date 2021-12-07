@@ -32,7 +32,7 @@ class Ui(QWidget):
         self.layoutMenu.addWidget(self.Button1)
 
 
-        self.openglWidget1 = Core(self, "/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl")
+        self.openglWidget1 = Core(self, "/home/yann/2020_repositories/KMU/Graphics/tests/3DViewer/Objects/Cube.stl")
     
     def BoxFilled(self) -> QVBoxLayout:
         self.layoutBox.addLayout(self.layoutMenu)
