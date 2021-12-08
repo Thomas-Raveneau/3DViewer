@@ -84,6 +84,7 @@ class Ui(QWidget):
         self.layoutMenu.addStretch(1)
         self.menu.setLayout(self.layoutMenu)
         self.menu.setMaximumWidth(300)
+
         self.openglWidget1 = Core(self, self.nameOfMesh, self.nameOfTexture)
 
     def initObjectAndTexture(self):

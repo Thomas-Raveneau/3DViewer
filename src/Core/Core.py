@@ -33,13 +33,14 @@ class Core(QOpenGLWidget):
     current_mesh: Mesh
     file: str
     shader: Shader
+    texture: QOpenGLTexture
     
-    left = -20
-    right = 20
-    bottom = -15
-    top = 15
-    near = -20
-    far = 20
+    left = -25
+    right = 25
+    bottom = -20
+    top = 20
+    near = -25
+    far = 25
     
     PROGRAM_VERTEX_ATTRIBUTE, PROGRAM_TEXCOORD_ATTRIBUTE = range(2)
 
@@ -62,6 +63,7 @@ class Core(QOpenGLWidget):
         self.gl.glOrtho(self.left, self.right, self.bottom, self.top, self.near, self.far)
 
         self.stl_reader = StlReader()        
+        self.operator = MeshOperator()
         
         filename = "Shaders/FogShader"        
 
@@ -78,7 +80,6 @@ class Core(QOpenGLWidget):
 
         self.program.setUniformValue('texture', 0)
 
-        self.operator = MeshOperator()
 
     def updateMesh(self)-> None:
         self.draw_count = len(self.vertices)
