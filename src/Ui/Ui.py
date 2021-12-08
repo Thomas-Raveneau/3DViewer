@@ -286,8 +286,7 @@ class Ui(QWidget):
         self.XInputSh.resize(80, 40)
         self.layoutTranslateTexField.addWidget(self.XInputSh)
         self.YInputSh = QLineEdit(self)
-        self.YInputSh.setPlaceholderText("0.0"
-                                       "")
+        self.YInputSh.setPlaceholderText("0.0")
         self.YInputSh.move(20, 20)
         self.YInputSh.resize(80, 40)
         self.layoutShearTexField.addWidget(self.XInputSh)
