@@ -83,25 +83,51 @@ class Ui(QWidget):
 
 
         self.layoutMenu.addStretch(1)
-        self.btnMirror = QPushButton("Mirror")
-        self.btnMirror.setIcon(self.iconGuitare)
-        self.btnMirror.clicked.connect(self.funcMirror)
-        self.btnMirror.setStyleSheet('''
-                                              border-style: outset;
-                                              border-width: 2px;
-                                              border-radius: 15px;
-                                              border-color: black;
-                                              padding: 4px;
-                                              ''')
-        self.layoutMenu.addWidget(self.btnMirror)
+        self.btnMirrorX = QPushButton("Mirror X")
+        self.btnMirrorX.setIcon(self.iconGuitare)
+        self.btnMirrorX.clicked.connect(self.funcMirrorX)
+        self.btnMirrorX.setStyleSheet('''
+                                                      border-style: outset;
+                                                      border-width: 2px;
+                                                      border-radius: 15px;
+                                                      border-color: black;
+                                                      padding: 4px;
+                                                      ''')
+        self.btnMirrorY = QPushButton("Mirror Y")
+        self.btnMirrorY.setIcon(self.iconGuitare)
+        self.btnMirrorY.clicked.connect(self.funcMirrorY)
+        self.btnMirrorY.setStyleSheet('''
+                                                      border-style: outset;
+                                                      border-width: 2px;
+                                                      border-radius: 15px;
+                                                      border-color: black;
+                                                      padding: 4px;
+                                                      ''')
+        self.btnMirrorZ = QPushButton("Mirror Z")
+        self.btnMirrorZ.setIcon(self.iconGuitare)
+        self.btnMirrorZ.clicked.connect(self.funcMirrorZ)
+        self.btnMirrorZ.setStyleSheet('''
+                                                      border-style: outset;
+                                                      border-width: 2px;
+                                                      border-radius: 15px;
+                                                      border-color: black;
+                                                      padding: 4px;
+                                                      ''')
+        self.layoutMenu.addWidget(self.btnMirrorX)
+        self.layoutMenu.addWidget(self.btnMirrorY)
+        self.layoutMenu.addWidget(self.btnMirrorZ)
 
         self.menu.setLayout(self.layoutMenu)
         self.menu.setMaximumWidth(300)
 
         self.openglWidget1 = Core(self, self.nameOfMesh, self.nameOfTexture)
 
-    def funcMirror(self):
-        print("mirror")
+    def funcMirrorX(self):
+        print("mirror X")
+    def funcMirrorY(self):
+        print("mirror Y")
+    def funcMirrorZ(self):
+        print("mirror Z")
     def initObjectAndTexture(self):
         self.menuInit = QWidget()
         self.layoutInit = QVBoxLayout()
