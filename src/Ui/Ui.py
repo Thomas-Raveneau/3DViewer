@@ -81,12 +81,27 @@ class Ui(QWidget):
         ## Scale ##
         self.Scale()
 
+
         self.layoutMenu.addStretch(1)
+        self.btnMirror = QPushButton("Mirror")
+        self.btnMirror.setIcon(self.iconGuitare)
+        self.btnMirror.clicked.connect(self.funcMirror)
+        self.btnMirror.setStyleSheet('''
+                                              border-style: outset;
+                                              border-width: 2px;
+                                              border-radius: 15px;
+                                              border-color: black;
+                                              padding: 4px;
+                                              ''')
+        self.layoutMenu.addWidget(self.btnMirror)
+
         self.menu.setLayout(self.layoutMenu)
         self.menu.setMaximumWidth(300)
 
         self.openglWidget1 = Core(self, self.nameOfMesh, self.nameOfTexture)
 
+    def funcMirror(self):
+        print("mirror")
     def initObjectAndTexture(self):
         self.menuInit = QWidget()
         self.layoutInit = QVBoxLayout()
