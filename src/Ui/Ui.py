@@ -134,6 +134,25 @@ class Ui(QWidget):
     def funcMirrorZ(self):
         self.openglWidget1.onMirrorChange(Coordinates.Z)
         self.openglWidget1.update()
+    
+    def funcShearX(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.X)
+        self.openglWidget1.update()
+    
+    def funcShearY(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.Y)
+        self.openglWidget1.update()
+    
+    def funcShearZ(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.Z)
+        self.openglWidget1.update()
+        
 
     def initObjectAndTexture(self):
         self.menuInit = QWidget()

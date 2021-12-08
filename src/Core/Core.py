@@ -133,6 +133,9 @@ class Core(QOpenGLWidget):
     
     def onChangeReflect(self, coordReflect: coords)-> None:
         self.operator.reflect_mesh(coordReflect)
+    
+    def onChangeShear(self, shearTransform: 'tuple[float, float]', coordsShear : coords):
+        self.operator.shear_mesh(shearTransform, coordsShear)
 
     def clear(self) -> None:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
