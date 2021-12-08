@@ -2,6 +2,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import *
 from PyQt5.QtGui import QOpenGLContext
 from PyQt5.QtWidgets import *
+from src.Mesh.Coordinate import Coordinates
 from src.Ui.ButtonCustom import ButtonCustom
 from src.Ui.Dial import Dial
 from src.Mesh.Vertex import Vertex
@@ -123,11 +124,17 @@ class Ui(QWidget):
         self.openglWidget1 = Core(self, self.nameOfMesh, self.nameOfTexture)
 
     def funcMirrorX(self):
-        print("mirror X")
+        self.openglWidget1.onMirrorChange(Coordinates.X)
+        self.openglWidget1.update()
+
     def funcMirrorY(self):
-        print("mirror Y")
+        self.openglWidget1.onMirrorChange(Coordinates.Y)
+        self.openglWidget1.update()
+
     def funcMirrorZ(self):
-        print("mirror Z")
+        self.openglWidget1.onMirrorChange(Coordinates.Z)
+        self.openglWidget1.update()
+
     def initObjectAndTexture(self):
         self.menuInit = QWidget()
         self.layoutInit = QVBoxLayout()

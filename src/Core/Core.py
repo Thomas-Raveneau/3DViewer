@@ -125,6 +125,12 @@ class Core(QOpenGLWidget):
         self.textureFile = textureFile
         self.texture = QOpenGLTexture(QImage(self.textureFile))
     
+    def onChangeShear(self, vertex: Vertex)-> None:
+        print("shear")
+    
+    def onMirrorChange(self, coordMirror: coords):
+        self.operator.reflect_mesh(coordMirror)
+    
     def onChangeReflect(self, coordReflect: coords)-> None:
         self.operator.reflect_mesh(coordReflect)
 
