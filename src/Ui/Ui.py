@@ -18,7 +18,7 @@ class Color(Enum):
 class Ui(QWidget):
     meshIsValid: bool = False
     textureIsValid: bool = False
-    fontSize = 20
+    fontSize = 10
     nameOfMesh: str = "Mesh is undefined"
     nameOfTexture: str = "Texture is undefined"
 
@@ -84,6 +84,9 @@ class Ui(QWidget):
 
 
         self.layoutMenu.addStretch(1)
+        self.layoutMirror = QHBoxLayout()
+
+
         self.btnMirrorX = QPushButton("Mirror X")
         self.btnMirrorX.setIcon(self.iconGuitare)
         self.btnMirrorX.clicked.connect(self.funcMirrorX)
@@ -114,9 +117,14 @@ class Ui(QWidget):
                                                       border-color: black;
                                                       padding: 4px;
                                                       ''')
-        self.layoutMenu.addWidget(self.btnMirrorX)
-        self.layoutMenu.addWidget(self.btnMirrorY)
-        self.layoutMenu.addWidget(self.btnMirrorZ)
+        self.Shear()
+        self.titleMirror = QLabel("Mirror")
+        self.titleMirror.setFont(QFont('Arial', self.fontSize))
+        self.layoutMenu.addWidget(self.titleMirror)
+        self.layoutMirror.addWidget(self.btnMirrorX)
+        self.layoutMirror.addWidget(self.btnMirrorY)
+        self.layoutMirror.addWidget(self.btnMirrorZ)
+        self.layoutMenu.addLayout(self.layoutMirror)
 
         self.menu.setLayout(self.layoutMenu)
         self.menu.setMaximumWidth(300)
@@ -135,24 +143,7 @@ class Ui(QWidget):
         self.openglWidget1.onMirrorChange(Coordinates.Z)
         self.openglWidget1.update()
     
-    def funcShearX(self):
-        x = float(self.XInputSh.text())
-        y = float(self.YInputSh.text())
-        self.openglWidget1.onChangeShear((x, y), Coordinates.X)
-        self.openglWidget1.update()
-    
-    def funcShearY(self):
-        x = float(self.XInputSh.text())
-        y = float(self.YInputSh.text())
-        self.openglWidget1.onChangeShear((x, y), Coordinates.Y)
-        self.openglWidget1.update()
-    
-    def funcShearZ(self):
-        x = float(self.XInputSh.text())
-        y = float(self.YInputSh.text())
-        self.openglWidget1.onChangeShear((x, y), Coordinates.Z)
-        self.openglWidget1.update()
-        
+
 
     def initObjectAndTexture(self):
         self.menuInit = QWidget()
@@ -280,6 +271,81 @@ class Ui(QWidget):
             self.layoutBox.addWidget(self.menuInit)
             self.layoutBox.update()
             return self.layoutBox
+
+    def Shear(self):
+
+
+        self.layoutShearTexField = QHBoxLayout()
+        self.titleShear = QLabel("Shear")
+        self.titleShear.setFont(QFont('Arial', self.fontSize))
+        self.layoutMenu.addWidget(self.titleShear)
+
+        self.XInputSh = QLineEdit(self)
+        self.XInputSh.setPlaceholderText("0.0")
+        self.XInputSh.move(20, 20)
+        self.XInputSh.resize(80, 40)
+        self.layoutTranslateTexField.addWidget(self.XInputSh)
+        self.YInputSh = QLineEdit(self)
+        self.YInputSh.setPlaceholderText("0.0"
+                                       "")
+        self.YInputSh.move(20, 20)
+        self.YInputSh.resize(80, 40)
+        self.layoutShearTexField.addWidget(self.XInputSh)
+        self.layoutShearTexField.addWidget(self.YInputSh)
+        self.layoutMenu.addLayout(self.layoutShearTexField)
+
+        self.layoutShearButton = QHBoxLayout()
+
+        self.btnShearX = QPushButton("x")
+        self.btnShearX.clicked.connect(self.funcShearX)
+        self.btnShearX.setStyleSheet('''
+                                                          border-style: outset;
+                                                          border-width: 2px;
+                                                          border-radius: 15px;
+                                                          border-color: black;
+                                                          padding: 4px;
+                                                          ''')
+        self.btnShearY = QPushButton("y")
+        self.btnShearY.clicked.connect(self.funcShearY)
+        self.btnShearY.setStyleSheet('''
+                                                          border-style: outset;
+                                                          border-width: 2px;
+                                                          border-radius: 15px;
+                                                          border-color: black;
+                                                          padding: 4px;
+                                                          ''')
+        self.btnShearZ = QPushButton("z")
+        self.btnShearZ.clicked.connect(self.funcShearZ)
+        self.btnShearZ.setStyleSheet('''
+                                                          border-style: outset;
+                                                          border-width: 2px;
+                                                          border-radius: 15px;
+                                                          border-color: black;
+                                                          padding: 4px;
+                                                          ''')
+        self.layoutShearButton.addWidget(self.btnShearX)
+        self.layoutShearButton.addWidget(self.btnShearY)
+        self.layoutShearButton.addWidget(self.btnShearZ)
+
+        self.layoutMenu.addLayout(self.layoutShearButton)
+
+    def funcShearX(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.X)
+        self.openglWidget1.update()
+
+    def funcShearY(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.Y)
+        self.openglWidget1.update()
+
+    def funcShearZ(self):
+        x = float(self.XInputSh.text())
+        y = float(self.YInputSh.text())
+        self.openglWidget1.onChangeShear((x, y), Coordinates.Z)
+        self.openglWidget1.update()
 
     def Rotate(self):
         self.rotateBlock = QWidget()
