@@ -6,10 +6,8 @@ class Color(Enum):
     SECOND_COLOR = "#C812E6"
     THIRTH_COLOR = "#E85625"
 
-
 class Dial(QDial):
     color: Color
-
     def __init__(self, parent=None, color=Color.SECOND_COLOR):
         QDial.__init__(self, parent)
         style = 'QDial { background-color: ' + color.value + '}'

@@ -15,23 +15,62 @@ class Color(Enum):
     THIRTH_COLOR = "#E85625"
 
 class Ui(QWidget):
+    meshIsValid: bool = False
+    textureIsValid: bool = False
     fontSize = 20
+    nameOfMesh: str = "Mesh is undefined"
+    nameOfTexture: str = "Texture is undefined"
+
     def __init__(self, file="/home/jeanningros/Bureau/Keimyung/ComputerGraph/3DViewer/Objects/Menger_sponge_sample.stl",
                  parent=None):
         QWidget.__init__(self, parent)
+        self.font = QFontDatabase.applicationFontFamilies(QFontDatabase.addApplicationFont("Font/PressStart2P-Regular.ttf"))[0]
+        self.iconGuitare = QIcon('Images/coeurnoire.png')
+
+        ##QApplication.setFont(QFont(self.font))
+        self.init()
+
+    def init(self):
+        if self.meshIsValid and self.textureIsValid:
+            self.layoutBox.removeWidget(self.menuInit)
+            self.menuInit.deleteLater()
+            self.menuInit = None
+            self.coreApp()
+            self.layoutBox.addWidget(self.menu)
+            self.layoutBox.addWidget(self.openglWidget1)
+            self.layoutBox.update()
+        else:
+            self.initObjectAndTexture()
+    def coreApp(self):
         self.menu = QWidget()
-        self.layoutBox = QHBoxLayout()
         self.layoutMenu = QVBoxLayout()
         self.layoutGetElement = QHBoxLayout()
 
         ## Button Load Object ##
         self.btnGetFiles = QPushButton("Object")
         self.btnGetFiles.clicked.connect(self.getfile)
+        self.btnGetFiles.setIcon(self.iconGuitare)
+        self.btnGetFiles.setStyleSheet('''
+                                       border-style: outset;
+                                       border-width: 2px;
+                                       border-radius: 15px;
+                                       border-color: black;
+                                       padding: 4px;
+                                       ''')
         self.layoutGetElement.addWidget(self.btnGetFiles)
+
 
         ## Button Load Texture ##
         self.btnGetTexture = QPushButton("Texture")
         self.btnGetTexture.clicked.connect(self.loadTexture)
+        self.btnGetTexture.setIcon(self.iconGuitare)
+        self.btnGetTexture.setStyleSheet('''
+                                          border-style: outset;
+                                          border-width: 2px;
+                                          border-radius: 15px;
+                                          border-color: black;
+                                          padding: 4px;
+                                          ''')
         self.layoutGetElement.addWidget(self.btnGetTexture)
 
         self.layoutMenu.addLayout(self.layoutGetElement)
@@ -45,25 +84,134 @@ class Ui(QWidget):
         self.layoutMenu.addStretch(1)
         self.menu.setLayout(self.layoutMenu)
         self.menu.setMaximumWidth(300)
-        self.openglWidget1 = Core(self)
+        self.openglWidget1 = Core(self, self.nameOfMesh, self.nameOfTexture)
+
+    def initObjectAndTexture(self):
+        self.menuInit = QWidget()
+        self.layoutInit = QVBoxLayout()
+
+        self.layoutInitTitle = QHBoxLayout()
+        self.titleInitmenu = QLabel(self)
+        self.titleInitmenu.setFont(QFont(self.font))
+        self.titleInitmenuImg = QPixmap('Images/title.png')
+        self.titleInitmenu.setPixmap(
+            self.titleInitmenuImg.scaled(self.titleInitmenuImg.width(), self.titleInitmenuImg.height()))
+
+        self.headDeadImage = QLabel(self)
+        self.headDeadImage2 = QLabel(self)
+        self.pixmapheadDead = QPixmap('Images/coeur.png')
+        self.headDeadImage.setPixmap(self.pixmapheadDead.scaled(self.pixmapheadDead.width() / 2, self.pixmapheadDead.height() / 2))
+        self.headDeadImage2.setPixmap(self.pixmapheadDead.scaled(self.pixmapheadDead.width() / 2, self.pixmapheadDead.height() / 2))
+
+        self.layoutInitTitle.addWidget(self.headDeadImage)
+
+        self.layoutInitTitle.addWidget(self.titleInitmenu)
+        self.layoutInitTitle.addWidget(self.headDeadImage2)
+        self.layoutInit.addLayout(self.layoutInitTitle)
+
+        ## Button Load Object ##
+        self.getObjBlock = QWidget()
+        self.layoutInitObj = QHBoxLayout()
+        self.btnGetFiles = QPushButton("Get Object")
+        self.btnGetFiles.setIcon(self.iconGuitare)
+        self.btnGetFiles.clicked.connect(self.initfile)
+        self.btnGetFiles.setStyleSheet('''
+                                        border-style: outset;
+                                        border-width: 2px;
+                                        border-radius: 15px;
+                                        border-color: black;
+                                        padding: 4px;
+                                        ''')
+
+        self.titleMesh = QLabel(self.nameOfMesh)
+        self.titleMesh.setFont(QFont(self.font, 10))
+        self.layoutInitObj.addWidget(self.btnGetFiles)
+        self.layoutInitObj.addWidget(self.titleMesh)
+        self.layoutInitObj.addStretch(1)
+        self.getObjBlock.setMaximumHeight(300)
+        self.getObjBlock.setLayout(self.layoutInitObj)
+
+
+        ## Button Load Texture ##
+        self.layoutInitTexture = QHBoxLayout()
+
+        self.btnGetTexture = QPushButton("Get Texture")
+        self.btnGetTexture.clicked.connect(self.initTexture)
+        self.btnGetTexture.setIcon(self.iconGuitare)
+        self.btnGetTexture.setStyleSheet('''
+                                                    border-style: outset;
+                                                    border-width: 2px;
+                                                    border-radius: 15px;
+                                                    border-color: black;
+                                                    padding: 4px;
+                                                    ''')
+        self.titleTexture = QLabel(self.nameOfTexture)
+        self.titleTexture.setFont(QFont(self.font, 10))
+        self.layoutInitTexture.addWidget(self.btnGetTexture)
+        self.layoutInitTexture.addWidget(self.titleTexture)
+        self.layoutInitTexture.addStretch(1)
+
+        self.layoutInit.addWidget(self.getObjBlock)
+        self.layoutInit.addLayout(self.layoutInitTexture)
+
+        self.btnValidInit = QPushButton("Validate")
+        self.btnValidInit.clicked.connect(self.init)
+        self.btnValidInit.setStyleSheet('''
+                                            border-style: outset;
+                                            border-width: 2px;
+                                            border-radius: 15px;
+                                            border-color: black;
+                                            padding: 4px;
+                                            ''')
+        self.layoutInit.addWidget(self.btnValidInit)
+
+        self.menuInit.setLayout(self.layoutInit)
+
+
+    def initfile(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '/', "Image files (*.STL *.stl)")
+        self.nameOfMesh = fname[0]
+        self.meshIsValid = True
+        self.titleMesh.setText(self.nameOfMesh)
+        self.menuInit.update()
+
+    def initTexture(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '/', "Image files (*.vs *.fs *.jpg *.png)")
+        self.nameOfTexture = fname[0]
+        self.textureIsValid = True
+        self.titleTexture.setText(self.nameOfTexture)
+        print(self.nameOfTexture)
+        print(self.nameOfTexture)
+        self.menuInit.update()
 
     def getfile(self):
         self.layoutBox.removeWidget(self.openglWidget1)
         fname = QFileDialog.getOpenFileName(self, 'Open file', '/', "Image files (*.STL *.stl)")
+        self.nameOfMesh = fname[0]
         self.openglWidget1.clear()
-        self.openglWidget1 = Core(self, fname[0])
+        self.openglWidget1 = Core(self, self.nameOfMesh)
         self.layoutBox.addWidget(self.openglWidget1)
 
     def loadTexture(self):
-        self.layoutBox.removeWidget(self.openglWidget1)
+        ##self.layoutBox.removeWidget(self.openglWidget1)
         fname = QFileDialog.getOpenFileName(self, 'Open file', '/', "Image files (*.vs *.fs *.jpg *.png)")
-        self.openglWidget1.onChangeFile(fname[0])
+        self.nameOfTexture = fname[0]
+        self.openglWidget1.onChangeFile(self.nameOfTexture)
         self.openglWidget1.update()
 
     def BoxFilled(self) -> QVBoxLayout:
-        self.layoutBox.addWidget(self.menu)
-        self.layoutBox.addWidget(self.openglWidget1)
-        return self.layoutBox
+        self.layoutBox = QHBoxLayout()
+        if self.meshIsValid and self.textureIsValid:
+            self.layoutBox.removeWidget(self.menuInit)
+            self.layoutBox.addWidget(self.menu)
+            self.layoutBox.addWidget(self.openglWidget1)
+            self.layoutBox.update()
+            return self.layoutBox
+        else:
+            self.initObjectAndTexture()
+            self.layoutBox.addWidget(self.menuInit)
+            self.layoutBox.update()
+            return self.layoutBox
 
     def Rotate(self):
         self.rotateBlock = QWidget()
